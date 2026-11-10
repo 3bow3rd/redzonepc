@@ -1,0 +1,21 @@
+name: Build Native Windows App
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+jobs:
+  win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - name: Publish
+        run: dotnet publish RedZoneClub.csproj -c Release -o out
+      - name: List output
+        shell: pwsh
+        run: Get-ChildItem out | Select-Object Name, Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RedZoneClub-Windows
+          path: out/RedZoneClub.exe
